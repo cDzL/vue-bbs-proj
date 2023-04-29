@@ -6,7 +6,7 @@ app.use((request,response,next)=>{
     next()
 })
 
-const cors = require('cors')
+const cors = require('cors')   //解决请求跨域问题
 const uploadimg = require('./router/uploadImg')
 //数据库相关
 const options = require('./shame/sql');
@@ -18,12 +18,12 @@ const nodemail = require('./email/emailer')
 let objMulter = multer({dest:"./public/upload"})//设置上传的图片所存放位置
 app.use(cors())  //设置允许跨域
 app.use(express.static('../dist'))
-app.use(objMulter.any())//表述允许上传任意文件类型
+app.use(objMulter.any())//表示允许上传任意文件类型
 app.use(express.static("./public"))
 app.use('/',uploadimg)
 
-app.get('/public/upload/*', (req, res)=>{
-    res.sendFile( __dirname + "/" + req.url );
+app.get('/upload/*', (req, res)=>{
+    res.sendFile( __dirname + "/public" + req.url );
 })
 
 
@@ -94,9 +94,18 @@ app.get('/collect',(req,res)=>{      //收藏和取消收藏
 })
 app.all('/changeInfo',(req,res)=>{   //修改用户信息
     const {query:{user}} = req
-    const {userid,att_img,username,signalname,age,sex,telphone,address,email} = JSON.parse(user)
-    let arr = [att_img,username,signalname,age,sex,telphone,address,email,userid]
-    options.changeInfo(arr,res)
+    let sort = JSON.parse(user).sort
+    if(typeof(sort) === "number"){
+        console.log(1)
+        const {userid,signalname,telphone,address,sort,state,email} = JSON.parse(user)
+        let arr = [signalname,telphone,address,sort,email,state,userid]
+        admoptions.adminchangeInfo(arr,res)
+    }else{
+        const {userid,att_img,username,signalname,age,sex,telphone,address,email} = JSON.parse(user)
+        let arr = [att_img,username,signalname,age,sex,telphone,address,email,userid]
+        options.changeInfo(arr,res)
+    }
+    
 })
 app.get('/article',(req,res)=>{      //进入某贴得详情页
     const {query:{aid}} = req
@@ -216,11 +225,11 @@ app.get('/upadatesetting',(req,res)=>{   //更新用户隐私设置
     const {query:{userid,personal1,personal2,personal3}} = req
     options.updateSetting([Number(personal1),Number(personal2),Number(personal3),userid],res)
 })
-app.get('/getactivepersonal',(req,res)=>{
+app.get('/getactivepersonal',(req,res)=>{  
     const {query:{userid}} = req
     options.getActPer(userid,res)
 })
-app.get('/getcommentpersonal',(req,res)=>{
+app.get('/getcommentpersonal',(req,res)=>{  
     const {query:{userid}} = req
     options.getComPer(userid,res)
 })
@@ -228,22 +237,22 @@ app.get('/getcollectpersonal',(req,res)=>{
     const {query:{userid}} = req
     options.getColPer(userid,res)
 })
-app.get('/searcharticles',(req,res)=>{
+app.get('/searcharticles',(req,res)=>{   //搜索帖子
     const {query:{keywords,index}} = req
     options.findArticles(keywords,res,index)
 })
 
-app.get('/getemoji',(req,res)=>{
+app.get('/getemoji',(req,res)=>{  //获取表情列表
     const {query:{index}} = req;
     options.getEmoji(index,res);
 })
-app.get('/getimgList',(req,res)=>{
+app.get('/getimgList',(req,res)=>{    //获取图片列表
     const {query:{index}} = req
     options.getImgList(index,res)
 })
 
 
-//---------------------管理员-------------------------------
+//---------------------------管理员------------------------------------
 app.all('/pubnotice',(req,res)=>{      //发布公告
     const {query:{notice}} = req
     let noticetime = getDate()
@@ -413,6 +422,16 @@ app.get('/setpassword',(req,res)=>{
         res.send(false)
     }
 })
+
+app.all('/adminchangeInfo',(req,res)=>{   //修改用户信息
+    const {query:{user}} = req
+    const arr = [...JSON.parse(user)]
+    console.log(arr)
+    options.changeInfo(arr,res)
+})
+
+
+
 
 app.listen(8888,()=>{      //开启端口
     console.log('端口号8888已开启')

@@ -27,7 +27,7 @@ export default {
     methods:{
         getCode(){     //获取验证码
             if(this.clicked == false){
-                if(this.email!=''&&this.email!=null&&this.username!=''&&this.password!=''){
+                if(this.email!=''&&this.email!=null&&this.username!=''&&this.password!=''&&this.email.match(/^\w+@[A-Za-z0-9]+(\.+com)$/)){
                     setTimeout(()=>{
                         this.clicked = false
                         this.seconds = 60

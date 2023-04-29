@@ -241,7 +241,7 @@ module.exports.getAllPlate =(response)=>{         //获取所有帖子的数量
         }
     })
 } 
-module.exports.updatePlate = (arr,response)=>{
+module.exports.updatePlate = (arr,response)=>{  //修改板块信息
     const sql = "update plate set platename = ? where plateid = ?"
     connection.query(sql,arr,(err)=>{
         if(err){
@@ -252,8 +252,8 @@ module.exports.updatePlate = (arr,response)=>{
         }
     })
 }
-module.exports.addPlate = (platename,response)=>{
-    const sql = "insert into plate(platename,articlenum) values(?,0)"
+module.exports.addPlate = (platename,response)=>{   //添加板块
+    const sql = "insert into plate(platename) values(?)"
     connection.query(sql,platename,(err)=>{
         if(err){
             console.log(err.message);
@@ -263,7 +263,7 @@ module.exports.addPlate = (platename,response)=>{
         }
     })
 }
-module.exports.SearchPlate = (keywords,response)=>{
+module.exports.SearchPlate = (keywords,response)=>{  //搜索板块
     const sql = "select * from plate where plateid = ? || platename like ?"
     connection.query(sql,[keywords,'%'+keywords+'%'],(err,result)=>{
         if(err){
@@ -274,7 +274,7 @@ module.exports.SearchPlate = (keywords,response)=>{
         }
     })
 }
-module.exports.deletePlate = (plateid,response)=>{
+module.exports.deletePlate = (plateid,response)=>{   //删除板块
     const sql = "delete from plate where plateid = ?"
     connection.query(sql,plateid,(err)=>{
         if(err){
@@ -286,7 +286,7 @@ module.exports.deletePlate = (plateid,response)=>{
     })
 }
 
-module.exports.getArticleById = (aid,response)=>{
+module.exports.getArticleById = (aid,response)=>{   //
     const sql = "select * from articles where aid = ?"
     connection.query(sql,aid,(err,result)=>{
         if(err){
@@ -310,7 +310,7 @@ module.exports.getAllReport =(response)=>{         //获取所有举报信息的
     })
 } 
 
-module.exports.getReports = (index,response)=>{
+module.exports.getReports = (index,response)=>{   //获取举报的信息
     const sql = "select * from report limit ?,?";
     let from = index*10
     let to = 10
@@ -324,7 +324,7 @@ module.exports.getReports = (index,response)=>{
     })
 }
 
-module.exports.deleteReport = (reportid,response)=>{
+module.exports.deleteReport = (reportid,response)=>{   
     const sql = "delete from report where reportid = ?"
     connection.query(sql,reportid,(err)=>{
         if(err){
@@ -348,7 +348,7 @@ module.exports.getAllAskFor =(response)=>{         //获取所有帖子的数量
     })
 } 
 
-module.exports.getAskFors = (index,response)=>{
+module.exports.getAskFors = (index,response)=>{   //获取请求版主的信息
     const sql = "select * from askfor limit ?,?";
     let from = index*10
     let to = 10
@@ -373,7 +373,7 @@ module.exports.deleteAskFor = (askforid,response)=>{
     })
 }
 
-module.exports.AgreeReq = (userid,response)=>{
+module.exports.AgreeReq = (userid,response)=>{   
     const sql = "update users set sort = 1 where userid = ?"
     connection.query(sql,userid,(err)=>{
         if(err){
@@ -407,6 +407,13 @@ module.exports.deleteBgImg = (bgimgid,response)=>{
     })
 }
 
+module.exports.adminchangeInfo =(arr,response)=>{   //修改用户信息
+    const sql = "UPDATE USERS SET signalname=?,telphone=?,address=?,sort=?,email=?,state=? where userid = ?"
+    connection.query(sql,arr,(err)=>{
+        if(err)response.send(false)
+        else response.send(true)
+    })
+}
 // module.exports.addemo = (i,response)=>{
 //    const sql = "insert into emoji(emodec) values(?)"
 //     connection.query(sql,i,(err)=>{

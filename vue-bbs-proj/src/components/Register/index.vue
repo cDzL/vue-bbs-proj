@@ -44,7 +44,7 @@ export default {
         register(){
             if(this.arr[0]===''||this.arr[1]===''){
                 alert('账号密码不能为空')
-            }else if(this.arr[2]!=''){
+            }else if(this.arr[2]!=''&&this.arr[2].match(/^\w+@[A-Za-z0-9]+(\.+com)$/)){
                 axios.get('/api/ddCode',{params:{
                     code:this.flag,
                     email:this.arr[2]
@@ -80,7 +80,7 @@ export default {
             }
         },
         getCode(){     //获取验证码
-            if(this.clicked == false){
+            if(this.clicked == false&&this.arr[2].match(/^\w+@[A-Za-z0-9]+(\.+com)$/)){
                 if(this.arr[2]!=''&&this.arr[2]!=null){
                     setTimeout(()=>{
                         this.clicked = false
