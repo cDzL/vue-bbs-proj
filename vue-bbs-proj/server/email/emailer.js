@@ -4,7 +4,7 @@ const config = {
     secure:true,
     auth:{
         user:'1733720614@qq.com',
-        pass:'ajqk hugn tohx edii'
+        pass:'***'
     }
 };
 const transporter = nodemailer.createTransport(config);
